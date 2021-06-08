@@ -13,22 +13,22 @@ RSpec.describe Coupon, type: :model do
     it { is_expected.to define_enum_for(:status).with_values(active: 0, inactive: 1) }
     it { is_expected.to validate_presence_of(:due_data) }
 
-    it "cant't have past due_data" do
+    it 'cant\'t have past due_data' do
       subject.due_data = 1.day.ago
       subject.valid?
-      expect(subject.errors.keys).to include :due_data
+      expect(subject.errors.attribute_names).to include :due_data
     end
 
     it 'is invalid with current due_data' do
       subject.due_data = Time.zone.now
       subject.valid?
-      expect(subject.errors.keys).to include :due_data
+      expect(subject.errors.attribute_names).to include :due_data
     end
 
     it 'is valid with future date' do
       subject.due_data = Time.zone.now + 1.hour
       subject.valid?
-      expect(subject.errors.keys).to_not include :due_data
+      expect(subject.errors.attribute_names).to_not include :due_data
     end
   end
 end
