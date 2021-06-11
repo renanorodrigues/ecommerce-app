@@ -1,11 +1,18 @@
 module Admin::V1
   class CategoriesController < ApiController
+    before_action :set_category, only: [:update]
+
     def index
       @categories = Category.all
     end
 
     def create
       @category = Category.new(category_params)
+      category_save!
+    end
+
+    def update
+      @category.attributes = category_params
       category_save!
     end
 
@@ -21,6 +28,10 @@ module Admin::V1
       render :show
     rescue
       render_error(fields: @category.errors.messages)
+    end
+
+    def set_category
+      @category = Category.find_by_id(params[:id])
     end
   end
 end
