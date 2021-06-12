@@ -1,6 +1,6 @@
 module Admin::V1
   class CategoriesController < ApiController
-    before_action :set_category, only: [:update]
+    before_action :set_category, only: [:update, :destroy]
 
     def index
       @categories = Category.all
@@ -14,6 +14,12 @@ module Admin::V1
     def update
       @category.attributes = category_params
       category_save!
+    end
+
+    def destroy
+      @category.destroy!
+    rescue
+      render_error(fields: @category.errors.messages, status: :no_content)
     end
 
     private
