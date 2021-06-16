@@ -4,23 +4,21 @@ Project created based on the following OneBitCode bootcamp
 
 ## Modifications
 
-1. Dockerizing the application
-### Dockerization the application to facilitate the installation and maintenance of services.
+### Dockerizing the application
 
-* Use docker to run the application in your machine by clone this repository. After that, run the command:
+1. Use docker to run the application in your machine by clone this repository. After that, run the command:
 ```
 docker-compose build
 ```
-* Next, create the database
+2. Next, create the database
 ```
 docker-compose run rails-api rails db:create
 ```
-* And run the migratons
+3. And run the migratons
 ```
 docker-compose run rails-api rails db:migrate
 ```
-
-* Test the application
+4. Test the application
 ```
 docker-compose up
 ```
