@@ -1,5 +1,7 @@
 module Admin::V1
   class CouponsController < ApiController
+    before_action :set_coupon, only: [:update, :destroy]
+
     def index
       @coupons = Coupon.all
     end
@@ -7,6 +9,17 @@ module Admin::V1
     def create
       @coupon = Coupon.new(coupon_params)
       coupon_save!
+    end
+
+    def update
+      @coupon.attributes = coupon_params
+      coupon_save!
+    end
+
+    def destroy
+      @coupon.destroy!
+    rescue
+      render_error(fields: @coupon.errors.messages, status: :no_content)
     end
 
     private
@@ -21,6 +34,10 @@ module Admin::V1
       render :show
     rescue
       render_error(fields: @coupon.errors.messages)
+    end
+
+    def set_coupon
+      @coupon = Coupon.find_by_id(params[:id])
     end
   end
 end
