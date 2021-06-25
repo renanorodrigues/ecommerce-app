@@ -36,4 +36,14 @@ module Admin
   end
 end
 ~~~
+
+instead of doing this:
+~~~ruby
+service = TestService.new(Model.all, params)
+service.call
+~~~
+This class will permit something like this:
+~~~ruby
+TestService.call(Model.all, params)
+~~~
 The implementation of this class was based on this article https://www.toptal.com/ruby-on-rails/rails-service-objects-tutorial
