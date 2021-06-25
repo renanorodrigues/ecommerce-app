@@ -37,7 +37,7 @@ module Admin
 end
 ~~~
 
-instead of doing this:
+Instead of doing this:
 ~~~ruby
 service = TestService.new(Model.all, params)
 service.call
