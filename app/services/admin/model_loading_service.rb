@@ -1,5 +1,5 @@
 module Admin  
-  class ModelLoadingService # Essa classe é uma típico exemplo de PORO - Pure and Old Ruby Object
+  class ModelLoadingService < ApplicationService # Essa classe é uma típico exemplo de PORO - Pure and Old Ruby Object
     def initialize(searchable_modal, params = {})
       @searchable_modal = searchable_modal
       @params = params
