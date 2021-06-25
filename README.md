@@ -22,3 +22,17 @@ docker-compose run rails-api rails db:migrate
 ```
 docker-compose up
 ```
+
+### Service Object
+
+All services objects in this application inherit from a class called **ApplicationService** which uses metaprogramming to instantiate a new object every time the **call** method is called. 
+~~~ruby
+module Admin
+  class ApplicationService
+    def self.call(*args, &block)
+      new(*args, &block).call
+    end
+  end
+end
+~~~
+The implementation of this class was based on this article https://www.toptal.com/ruby-on-rails/rails-service-objects-tutorial
