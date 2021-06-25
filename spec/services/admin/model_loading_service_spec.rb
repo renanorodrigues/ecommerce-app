@@ -19,16 +19,14 @@ describe Admin::ModelLoadingService do
 
       it 'returns right :lenght following pagination' do
         # describe_class sempre se refere a classe definida no teste, nesse caso é o Admin::ModelLoadingService
-        service = described_class.new(Category.all, params)
-        result_categories = service.call
+        result_categories = described_class.call(Category.all, params)
         expect(result_categories.count).to eq 4
       end
 
       it 'returns the records by params given' do
         # Aqui eu estou ordenando de forma decrescente pelo name. Por isso o método sort! com o operador <=>
         search_categories.sort! { |a, b| b[:name] <=> a[:name] }
-        service = described_class.new(Category.all, params)
-        result_categories = service.call
+        result_categories = described_class.call(Category.all, params)
         expected_categories = search_categories[4..7] # Retirando o array os esperados 4 registros da página 2
         expect(result_categories).to contain_exactly *expected_categories
       end
@@ -36,14 +34,12 @@ describe Admin::ModelLoadingService do
 
     context 'when params aren\'t present' do
       it 'returns default :lenght pagination' do
-        service = described_class.new(Category.all, nil)
-        result_categories = service.call
+        result_categories = described_class.call(Category.all, nil)
         expect(result_categories.count).to eq 10
       end
 
       it 'returns the first 10 records' do
-        service = described_class.new(Category.all, nil)
-        result_categories = service.call
+        result_categories = described_class.call(Category.all, nil)
         expected_categories = categories[0..9]
         expect(result_categories).to contain_exactly *expected_categories
       end
