@@ -1,4 +1,4 @@
-# Project ecommerce for games
+# Project ecommerce
 
 Project created based on the following OneBitCode bootcamp
 
@@ -22,6 +22,7 @@ docker-compose run rails-api rails db:migrate
 ```
 docker-compose up
 ```
+
 
 ### Service Object
 
