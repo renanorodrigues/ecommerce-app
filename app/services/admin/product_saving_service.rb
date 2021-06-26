@@ -25,7 +25,6 @@ module Admin
     private 
 
     def build_productable
-      byebug
       @product.productable ||= @product_params[:productable].camelcase.safe_constantize.new
       @product.productable.attributes = @productable_params
     end
