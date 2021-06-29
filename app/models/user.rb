@@ -6,7 +6,8 @@ class User < ActiveRecord::Base
   include DeviseTokenAuth::Concerns::User
   include NameSearchable
   include Paginatable
-
+  has_many :licenses
+  
   validates :name, :profile, presence: true
 
   enum profile: { admin: 0, client: 1 }
