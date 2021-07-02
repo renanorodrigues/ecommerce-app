@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   include DeviseTokenAuth::Concerns::User
   include NameSearchable
   include Paginatable
-  has_many :licenses
+  has_many :licenses, dependent: :restrict_with_error
   
   validates :name, :profile, presence: true
 
