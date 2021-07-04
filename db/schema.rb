@@ -72,6 +72,8 @@ ActiveRecord::Schema.define(version: 2021_06_28_233729) do
 
   create_table "licenses", force: :cascade do |t|
     t.string "key"
+    t.integer "status"
+    t.integer "platform"
     t.bigint "game_id", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
