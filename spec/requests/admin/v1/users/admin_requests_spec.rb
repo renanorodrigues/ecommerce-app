@@ -4,7 +4,7 @@ RSpec.describe 'Admin V1 Users access as admin', type: :request do
   let!(:user_admin) { create(:user) }
 
   context 'GET /users' do
-    let!(:users) { create_list(:user, 10) }
+    let!(:users) { create_list(:user, 5) }
     let(:url) { '/admin/v1/users' }
     before { get url, headers: auth_header(user_admin) }
 
@@ -14,7 +14,7 @@ RSpec.describe 'Admin V1 Users access as admin', type: :request do
 
     it 'returns all users' do
       expect_all_users = User.all.as_json(only: %i(id name email profile))
-      expect(body_json['users']).to eq expect_all_users
+      expect(body_json['users']).to contain_exactly *expect_all_users
     end
   end
 
