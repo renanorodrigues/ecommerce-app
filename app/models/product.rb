@@ -1,6 +1,7 @@
 class Product < ApplicationRecord
-  include NameSearchable
+  include LikeSearchable
   include Paginatable
+  
   belongs_to :productable, polymorphic: true
   has_many :product_categories, dependent: :destroy
   has_many :categories, through: :product_categories
