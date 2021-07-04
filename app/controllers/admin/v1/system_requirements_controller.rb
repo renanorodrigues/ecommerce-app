@@ -1,9 +1,10 @@
 module Admin::V1
   class SystemRequirementsController < ApiController
-    before_action :load_system_requirement, only: [:show, :update, :destroy]
+    before_action :set_system_requirement, only: %i(show update destroy)
 
     def index
-      @system_requirements = load_system_requirements
+      @loading_service = Admin::ModelLoadingService.new(SystemRequirement.all, searchable_params)
+      @loading_service.call
     end
 
     def create
@@ -34,13 +35,12 @@ module Admin::V1
       render_error(fields: @system_requirement.errors.messages)
     end
 
-    def load_system_requirement
-      @system_requirement = SystemRequirement.find(params[:id])
+    def set_system_requirement
+      @system_requirement = SystemRequirement.find_by_id(params[:id])
     end
 
-    def load_system_requirements
-      permitted = params.permit({ search: :name }, { order: {} }, :page, :length)
-      Admin::ModelLoadingService.new(SystemRequirement.all, permitted).call
+    def searchable_params
+      params.permit({ search: :name }, { order: {} }, :page, :length)
     end
 
     def system_requirement_params
