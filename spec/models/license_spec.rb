@@ -10,6 +10,16 @@ RSpec.describe License, type: :model do
 
   context 'validations' do
     it { is_expected.to validate_presence_of(:key) }
-    it { is_expected.to validate_uniqueness_of(:key).case_insensitive }
+    it { is_expected.to validate_presence_of(:status) }
+    it { is_expected.to validate_presence_of(:platform) }
+    # Valida a unicidade do campo key, ignorando case_sensitive, e se é único para cada plataforma
+    it { is_expected.to validate_uniqueness_of(:key).case_insensitive.scoped_to(:platform) }
+    it { is_expected.to define_enum_for(:status).with_values({ available: 1, in_use: 2, inactive: 3 })}
+    it { is_expected.to define_enum_for(:platform).with_values({ steam: 1, battle_net: 2, origin: 3 })}
+  end
+
+  context 'concerns' do
+    it_behaves_like 'paginatable concern', :license
+    it_behaves_like 'like searchable concern', :license, :key
   end
 end
