@@ -12,7 +12,7 @@ RSpec.describe Category, type: :model do
   end
 
   context 'concerns' do
-    it_behaves_like 'name searchable concern', :category
+    it_behaves_like 'like searchable concern', :category, :name
     it_behaves_like 'paginatable concern', :category
   end
 end

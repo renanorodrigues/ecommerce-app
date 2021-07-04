@@ -8,7 +8,7 @@ RSpec.describe User, type: :model do
   end
 
   context 'concerns' do
-    it_behaves_like 'name searchable concern', :user
     it_behaves_like 'paginatable concern', :user
+    it_behaves_like 'like searchable concern', :user, :name
   end
 end

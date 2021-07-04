@@ -33,7 +33,7 @@ RSpec.describe Coupon, type: :model do
   end
 
   context 'concerns' do
-    it_behaves_like 'name searchable concern', :coupon
     it_behaves_like 'paginatable concern', :coupon
+    it_behaves_like 'like searchable concern', :coupon, :name
   end
 end
