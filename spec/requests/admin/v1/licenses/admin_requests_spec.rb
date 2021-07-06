@@ -1,34 +1,114 @@
 require 'rails_helper'
 
-RSpec.describe "Admin V1 Licenses as :admin", type: :request do
-  let(:user) { create(:user) }
+RSpec.describe 'Admin V1 Licenses as :admin', type: :request do
+  let!(:user) { create(:user) }
+  let!(:game) { create(:game) }
 
-  context "GET /licenses" do
-    let(:url) { "/admin/v1/licenses" }
-    let!(:licenses) { create_list(:license, 10) }
+  context 'GET /games/:game_id/licenses' do
+    let(:url) { "/admin/v1/games/#{game.id}/licenses" }
+    let!(:licenses) { create_list(:license, 10, game: game) }
     
-    it "returns 10 Licenses" do
-      get url, headers: auth_header(user)
-      expect(body_json['licenses'].count).to eq 10
-    end
-    
-    it "returns 10 first Licenses" do
-      get url, headers: auth_header(user)
-      expected_licenses = licenses[0..9].as_json(only: %i(id key status platform game_id user_id))
-      expect(body_json['licenses']).to contain_exactly *expected_licenses
+    context "without any params" do
+      it "returns 10 Licenses" do
+        get url, headers: auth_header(user)
+        expect(body_json['licenses'].count).to eq 10
+      end
+      
+      it "returns 10 first Licenses" do
+        get url, headers: auth_header(user)
+        expected_licenses = licenses[0..9].as_json(only: %i(id key status platform game_id user_id))
+        expect(body_json['licenses']).to contain_exactly *expected_licenses
+      end
+
+      it "returns success status" do
+        get url, headers: auth_header(user)
+        expect(response).to have_http_status(:ok)
+      end
+
+      it_behaves_like 'pagination meta attributes', { page: 1, length: 10, total_pages: 1 } do
+        before { get url, headers: auth_header(user) }
+      end
     end
 
-    it "returns success status" do
-      get url, headers: auth_header(user)
-      expect(response).to have_http_status(:ok)
+    context "with search[:key] param" do
+      let!(:search_key_licenses) do
+        licenses = [] 
+        15.times { |n| licenses << create(:license, key: "SearchKey #{n + 1}", game: game) }
+        licenses 
+      end
+
+      let(:search_params) { { search: { key: "SearchKey" } } }
+
+      it "returns only seached licenses limited by default pagination" do
+        get url, headers: auth_header(user), params: search_params
+        expected_licenses = search_key_licenses[0..9].map do |license|
+          license.as_json(only: %i(id key status platform game_id user_id))
+        end
+        expect(body_json['licenses']).to contain_exactly *expected_licenses
+      end
+
+      it "returns success status" do
+        get url, headers: auth_header(user), params: search_params
+        expect(response).to have_http_status(:ok)
+      end
+
+      it_behaves_like 'pagination meta attributes', { page: 1, length: 10, total_pages: 2 } do
+        before { get url, headers: auth_header(user), params: search_params }
+      end
+    end
+
+    context "with pagination params" do
+      let(:page) { 2 }
+      let(:length) { 5 }
+
+      let(:pagination_params) { { page: page, length: length } }
+
+      it "returns records sized by :length" do
+        get url, headers: auth_header(user), params: pagination_params
+        expect(body_json['licenses'].count).to eq length
+      end
+      
+      it "returns licenses limited by pagination" do
+        get url, headers: auth_header(user), params: pagination_params
+        expected_licenses = licenses[5..9].as_json(only: %i(id key status platform game_id user_id))
+        expect(body_json['licenses']).to contain_exactly *expected_licenses
+      end
+
+      it "returns success status" do
+        get url, headers: auth_header(user), params: pagination_params
+        expect(response).to have_http_status(:ok)
+      end
+
+      it_behaves_like 'pagination meta attributes', { page: 2, length: 5, total_pages: 2 } do
+        before { get url, headers: auth_header(user), params: pagination_params }
+      end
+    end
+
+    context "with order params" do
+      let(:order_params) { { order: { key: 'desc' } } }
+
+      it "returns ordered licenses limited by default pagination" do
+        get url, headers: auth_header(user), params: order_params
+        licenses.sort! { |a, b| b[:key] <=> a[:key]}
+        expected_licenses = licenses[0..9].as_json(only: %i(id key status platform game_id user_id))
+        expect(body_json['licenses']).to contain_exactly *expected_licenses
+      end
+ 
+      it "returns success status" do
+        get url, headers: auth_header(user), params: order_params
+        expect(response).to have_http_status(:ok)
+      end
+
+      it_behaves_like 'pagination meta attributes', { page: 1, length: 10, total_pages: 1 } do
+        before { get url, headers: auth_header(user), params: order_params }
+      end
     end
   end
 
-  context "POST /licenses" do
-    let(:url) { '/admin/v1/licenses' }
+  context 'POST /games/:game_id/licenses' do
+    let(:url) { "/admin/v1/games/#{game.id}/licenses" }
 
     context 'with valid params' do
-      let!(:game) { create(:game) }
       let!(:user) { create(:user) }
       let!(:license_params) do
         { license: attributes_for(:license, game_id: game.id, user_id: user.id) }.to_json

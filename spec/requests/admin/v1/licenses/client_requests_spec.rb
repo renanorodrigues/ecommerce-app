@@ -1,17 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe 'Admin V1 License as :client', type: :request do
-  let(:user) { create(:user, profile: :client) }
+  let!(:user) { create(:user, profile: :client) }
+  let!(:game) { create(:game) }
 
-  context 'GET /licenses' do
-    let(:url) { '/admin/v1/licenses' }
-    let!(:licenses) { create_list(:license, 10) }
+  context 'GET /games/:game_id/licenses' do
+    let(:url) { "/admin/v1/games/#{game.id}/licenses" }
+    let!(:licenses) { create_list(:license, 10, game: game) }
     before(:each) { get url, headers: auth_header(user) }
     include_examples 'forbidden access'
   end
 
-  context 'POST /licenses' do
-    let(:url) { '/admin/v1/licenses' }
+  context 'POST /games/:game_id/licenses' do
+    let(:url) { "/admin/v1/games/#{game.id}/licenses" }
     before(:each) { post url, headers: auth_header(user) }
     include_examples 'forbidden access'
   end
