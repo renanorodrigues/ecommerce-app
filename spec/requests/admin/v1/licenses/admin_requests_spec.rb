@@ -14,7 +14,7 @@ RSpec.describe "Admin V1 Licenses as :admin", type: :request do
     
     it "returns 10 first Licenses" do
       get url, headers: auth_header(user)
-      expected_licenses = licenses[0..9].as_json(only: %i(id key game_id user_id))
+      expected_licenses = licenses[0..9].as_json(only: %i(id key status platform game_id user_id))
       expect(body_json['licenses']).to contain_exactly *expected_licenses
     end
 
@@ -47,7 +47,7 @@ RSpec.describe "Admin V1 Licenses as :admin", type: :request do
 
       it 'return expected License' do
         post url, headers: auth_header(user), params: license_params
-        last_license_created = License.last.as_json(only: %i(id key game_id user_id))  
+        last_license_created = License.last.as_json(only: %i(id key status platform game_id user_id))  
         expect(body_json['license']).to eq last_license_created
       end
     end
@@ -86,7 +86,7 @@ RSpec.describe "Admin V1 Licenses as :admin", type: :request do
 
     it 'return expected License' do
       get url, headers: auth_header(user)
-      expect(body_json['license']).to eq license.as_json(only: %i(id key game_id user_id))  
+      expect(body_json['license']).to eq license.as_json(only: %i(id key status platform game_id user_id))  
     end
   end
 
@@ -114,7 +114,7 @@ RSpec.describe "Admin V1 Licenses as :admin", type: :request do
       it 'return expected License' do
         patch url, headers: auth_header(user), params: license_params
         license.reload
-        expect(body_json['license']).to eq license.as_json(only: %i(id key game_id user_id))  
+        expect(body_json['license']).to eq license.as_json(only: %i(id key status platform game_id user_id))  
       end
     end
 
