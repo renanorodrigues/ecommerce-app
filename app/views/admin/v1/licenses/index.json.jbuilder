@@ -1,3 +1,7 @@
 json.licenses do
-  json.array! @licenses, :id, :key, :status, :platform, :game_id, :user_id
+  json.array! @loading_service.records, :id, :key, :status, :platform, :game_id, :user_id
+end
+
+json.meta do
+  json.partial! 'shared/pagination', pagination: @loading_service.pagination
 end
