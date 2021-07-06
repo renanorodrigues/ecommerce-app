@@ -13,7 +13,7 @@ module Admin
     # Logo, isso é um exemplo de Duck Typing. Não importa a variável e sim seu comportamento!
     def call
       fix_pagination_values
-      filtered = @searchable_modal.search_by_name(@params.dig(:search, :name))
+      filtered = search_records(@searchable_modal)
       @records = filtered.order(@params[:order].to_h).paginate(@pagination[:page], @pagination[:length])
 
       total_pages = (filtered.count / @pagination[:length].to_f).ceil
@@ -25,6 +25,14 @@ module Admin
     def fix_pagination_values
       @pagination[:page] = @searchable_modal.model::DEFAULT_PAGE if @pagination[:page] <= 0
       @pagination[:length] = @searchable_modal.model::MAX_PER_PAGE if @pagination[:length] <= 0
+    end
+
+    def search_records(searched)
+      return searched unless @params.has_key?(:search)
+      @params[:search].each do |key, value|
+        searched = searched.like(key, value)
+      end
+      searched
     end
   end
 end
