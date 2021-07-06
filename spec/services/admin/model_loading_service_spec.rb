@@ -8,13 +8,13 @@ describe Admin::ModelLoadingService do
       let!(:search_system_requirements) do
         system_requirements = []
         15.times do
-          |n| system_requirements << create(:system_requirement, name: "Search #{n + 1}", operational_system: "Ubuntu")
+          |n| system_requirements << create(:system_requirement, name: "Search #{n + 1}", operational_system: "XionSystem")
         end
         system_requirements
       end
 
       let(:params) do
-        { search: { name: "Search", operational_system: "Ubun" }, order: { name: :desc }, page: 2, length: 4 }
+        { search: { name: "Search", operational_system: "Xion" }, order: { name: :desc }, page: 2, length: 4 }
       end
 
       let(:unexpected_system_requirements) do
