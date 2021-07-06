@@ -2,7 +2,9 @@ module Admin::V1
   class LicensesController < ApiController
     before_action :set_license, only: %i(show update destroy)
     def index
-      @licenses = License.all
+      game_licenses = License.where(game_id: params[:game_id])
+      @loading_service = Admin::ModelLoadingService.new(game_licenses, searchable_params)
+      @loading_service.call
     end
 
     def show; end
@@ -32,6 +34,10 @@ module Admin::V1
     def license_params
       return {} unless params.has_key?(:license)
       params.require(:license).permit(:id, :key, :status, :platform, :game_id, :user_id)
+    end
+
+    def searchable_params
+      params.permit({ search: :key }, { order: {} }, :page, :length)
     end
 
     def license_save!
