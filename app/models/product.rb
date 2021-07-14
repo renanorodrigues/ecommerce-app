@@ -9,6 +9,7 @@ class Product < ApplicationRecord
   validates :description, :image, :status, presence: :true
   validates :name, presence: :true, uniqueness: { case_sensitive: false }
   validates :price, presence: :true, numericality: { greater_than: 0 }
+  validates :featured, presence: true, if: -> { featured.nil? }
 
   has_one_attached :image
 
